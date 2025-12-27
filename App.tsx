@@ -10,7 +10,6 @@ import MyJourney from './src/components/dashboard/MyJourney';
 import { MeeBotAIEditor } from './components/ImageEditor';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { addTimelineEvent } from './src/lib/services/journeyService';
-import { gemini } from './functions/gemini';
 
 
 const WrongNetworkBanner: React.FC<{ onSwitch: (chainId: number) => void }> = ({ onSwitch }) => (
