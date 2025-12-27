@@ -8,7 +8,7 @@ export const CONTRACT_ADDRESSES: { [chainId: number]: string } = {
     [1337]: ethers.getAddress("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"), 
     
     // 🟡 สำหรับ Sepolia Testnet
-    [11155111]: ethers.getAddress("0xYourSepoliaNFTAddressHere"),
+    [11155111]: ethers.getAddress("0x247b882195a3358547432aab8eaa2825126a4f50"),
     
     // 🔴 Mainnets - Placeholders (ห้ามลืมใส่คอมม่าด้านหลังทุกบรรทัด)
     [1]: PLACEHOLDER_ADDRESS,
