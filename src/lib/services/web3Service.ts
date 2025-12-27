@@ -4,22 +4,17 @@ import { ethers } from "ethers";
 const PLACEHOLDER_ADDRESS = ethers.getAddress("0x000000000000000000000000000000000000dEaD");
 
 export const CONTRACT_ADDRESSES: { [chainId: number]: string } = {
-    // 🟢 สำหรับ MeeChain (ใช้ ID 1337 หรือตามที่กำหนดใน Nexus)
+    // 🟢 สำหรับ MeeChain (ใช้ ID 1337 ตามที่คุณระบุ)
     [1337]: ethers.getAddress("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"), 
     
-    // 🟡 สำหรับ Sepolia (ถ้าต้องการเก็บไว้ทดสอบ)
-    [11155111]: ethers.getAddress("0x247b882195a3358547432aab8eaa2825126a4f50"),
+    // 🟡 สำหรับ Sepolia Testnet
+    [11155111]: ethers.getAddress("0xYourSepoliaNFTAddressHere"),
     
-    // 🔴 ส่วนของ Mainnet อื่นๆ ยังคงเป็น Placeholder
-    [56]: PLACEHOLDER_ADDRESS, // BNB Smart Chain
+    // 🔴 Mainnets - Placeholders (ห้ามลืมใส่คอมม่าด้านหลังทุกบรรทัด)
+    [1]: PLACEHOLDER_ADDRESS,
+    [137]: PLACEHOLDER_ADDRESS,
+    [56]: PLACEHOLDER_ADDRESS,
 };
-    // Mainnets - Placeholders
-    [1]: PLACEHOLDER_ADDRESS,          // Ethereum
-    [137]: PLACEHOLDER_ADDRESS,       // Polygon
-    [56]: PLACEHOLDER_ADDRESS,        // BNB Smart Chain
-    [122]: PLACEHOLDER_ADDRESS,       // Fuse
-};
-
 const IPFS_GATEWAYS = [
   "https://ipfs.io/ipfs/",
   "https://gateway.pinata.cloud/ipfs/",
