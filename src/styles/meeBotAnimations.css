@@ -1,0 +1,212 @@
+/* meeBotAnimations.css
+   Global animations and basic MeeBot UI styles.
+   IMPORTANT: Import only from src/pages/_app.tsx (Next.js restriction).
+*/
+
+/* Base avatar */
+.meebot-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+  font-size: 32px;
+  user-select: none;
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+/* Style for SVG icons inside the avatar circle */
+.meebot-avatar svg {
+  width: 60%;
+  height: 60%;
+  transition: transform 240ms ease;
+}
+
+.meebot-avatar:hover svg {
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes meebot-bounce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-8px); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+.meebot-bounce { animation: meebot-bounce 1.8s ease-in-out infinite; }
+
+@keyframes meebot-fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.meebot-fadeIn { animation: meebot-fadeIn 420ms ease-out both; }
+
+@keyframes meebot-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.34); transform: scale(1); }
+  70% { box-shadow: 0 0 0 14px rgba(59,130,246,0); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); transform: scale(1); }
+}
+.meebot-pulse { animation: meebot-pulse 2.2s infinite; }
+
+@keyframes meebot-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.meebot-rotate { animation: meebot-rotate 2.5s linear infinite; }
+
+@keyframes meebot-slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.meebot-slideUp { animation: meebot-slideUp 360ms cubic-bezier(.2,.9,.2,1) both; }
+
+/* New celebration animations */
+@keyframes burst {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px #a78bfa); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-crystal-burst {
+  animation: burst 1s ease-out forwards;
+}
+
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.4)); }
+  50% { filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.7)); }
+  100% { filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.4)); }
+}
+.glow {
+  animation: glowPulse 2.5s infinite;
+}
+
+/* Evolution Animation */
+@keyframes evolutionGlow {
+  0% { filter: drop-shadow(0 0 5px #00f0ff); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 25px #ff00ff); transform: scale(1.1); }
+  100% { filter: drop-shadow(0 0 10px #00ff99); transform: scale(1); }
+}
+.evolve-animation {
+  animation: evolutionGlow 2s ease-in-out forwards;
+}
+
+
+/* Floating button */
+.meebot-floating-button {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 999;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+
+/* Slide-in panel */
+.meebot-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 88px;
+  width: 380px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100vh - 120px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.18);
+  overflow: hidden;
+  z-index: 1000;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel header/content */
+.meebot-panel .header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+.meebot-panel .content {
+  padding: 12px 16px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+.meebot-panel .content-nopad {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Panel Tabs */
+.meebot-tabs {
+  display: flex;
+  background-color: #f8fafc;
+  padding: 4px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+.meebot-tab-button {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  background-color: transparent;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.meebot-tab-button:hover {
+  background-color: #f1f5f9;
+}
+.meebot-tab-button.active {
+  background-color: #fff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+
+/* Demo wrapper and dark mode */
+.meebot-demo { padding: 1rem; color: inherit; }
+.meebot-demo.dark { background: #0f172a; color: #e6eef8; }
+.meebot-demo.dark .meebot-avatar {
+  background: linear-gradient(135deg,#0f172a,#06223a);
+  box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+}
+
+.meebot-demo.dark .meebot-tabs {
+  background-color: #1e293b;
+  border-bottom-color: #334155;
+}
+.meebot-demo.dark .meebot-tab-button {
+  color: #94a3b8;
+}
+.meebot-demo.dark .meebot-tab-button:hover {
+  background-color: #334155;
+}
+.meebot-demo.dark .meebot-tab-button.active {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+
+/* Accessibility focus */
+.meebot-floating-button:focus,
+.meebot-panel button:focus,
+button.copy-class:focus {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .meebot-avatar { width: 56px; height: 56px; font-size: 28px; }
+  .meebot-panel { width: calc(100% - 32px); right: 16px; bottom: 80px; }
+}
