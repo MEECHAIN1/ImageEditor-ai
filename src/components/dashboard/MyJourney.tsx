@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { fetchTimelineEvents } from '../../lib/services/journeyService';
