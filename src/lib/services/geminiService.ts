@@ -113,20 +113,31 @@ export async function editImage(
   }
 }
 
-// ปรับปรุงใน geminiService.ts ให้เรียกหา API ของเราเอง
+
 export async function generateImage(prompt: string): Promise<string> {
   try {
-    const response = await fetch('/.netlify/functions/gemini', {
-      method: 'POST',
-      body: JSON.stringify({ action: 'generateImage', prompt }),
+    const ai = await getAiClient();
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: {
+        parts: [{ text: prompt }],
+      },
+      config: {
+        responseModalities: [Modality.IMAGE],
+      },
     });
-    const data = await response.json();
-    if (data.error) throw new Error(data.error);
-    return data.result; // คืนค่า Base64 ของภาพ
+
+    for (const part of response.candidates[0].content.parts) {
+      if (part.inlineData) {
+        return part.inlineData.data; // This is base64 string
+      }
+    }
+    throw new Error("No image data found in the response from Gemini.");
   } catch (error) {
-    throw new Error(`Genesis Failed: ${error.message}`);
+    handleGeminiError(error);
   }
 }
+
 /**
  * Analyzes a MeeBot prompt to determine its mood and generate a message.
  * Simulates the logic of a server-side Genkit flow on the client.

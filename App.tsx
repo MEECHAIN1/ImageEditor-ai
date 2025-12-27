@@ -7,9 +7,10 @@ import NFTGallery from './src/components/dashboard/NFTGallery';
 import BadgeGallery from './src/components/dashboard/BadgeGallery';
 import ProposalGrid from './src/components/dashboard/ProposalGrid';
 import MyJourney from './src/components/dashboard/MyJourney';
-import MeeBotAIEditor from './components/ImageEditor';
+import ImageEditor from './components/ImageEditor';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { addTimelineEvent } from './src/lib/services/journeyService';
+
 
 const WrongNetworkBanner: React.FC<{ onSwitch: (chainId: number) => void }> = ({ onSwitch }) => (
   <div className="bg-red-900/80 backdrop-blur-sm text-red-200 p-3 text-center text-sm rounded-lg mb-4 border border-red-700">
