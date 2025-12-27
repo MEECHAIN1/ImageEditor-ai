@@ -7,7 +7,8 @@ import NFTGallery from './src/components/dashboard/NFTGallery';
 import BadgeGallery from './src/components/dashboard/BadgeGallery';
 import ProposalGrid from './src/components/dashboard/ProposalGrid';
 import MyJourney from './src/components/dashboard/MyJourney';
-import { MeeBotAIEditor } from './components/ImageEditor';
+import MeeBotAIEditor from './components/ImageEditor';
+import gemini from './functions/gemini';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { addTimelineEvent } from './src/lib/services/journeyService';
 
