@@ -12,7 +12,6 @@ import gemini from './functions/gemini';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { addTimelineEvent } from './src/lib/services/journeyService';
 
-
 const WrongNetworkBanner: React.FC<{ onSwitch: (chainId: number) => void }> = ({ onSwitch }) => (
   <div className="bg-red-900/80 backdrop-blur-sm text-red-200 p-3 text-center text-sm rounded-lg mb-4 border border-red-700">
     <p><strong>Unsupported Network Detected.</strong></p>
