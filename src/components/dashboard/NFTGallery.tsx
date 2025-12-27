@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ethers } from 'ethers';
 import { getOwnedMeeBots } from '../../lib/services/web3Service';
