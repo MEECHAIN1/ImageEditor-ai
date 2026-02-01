@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { editImage } from '../src/lib/services/geminiService';
 import { ImageFile } from '../types';
@@ -58,6 +59,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
   const [editedImage, setEditedImage] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
+  const [quality, setQuality] = useState<'1K' | '2K' | '4K'>('1K');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +80,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
   useEffect(() => {
     let isActive = true;
 
+    // Use shorter prompt check for preview to be responsive
     if (!originalImage || !prompt.trim() || prompt.length < 3 || isLoading) {
       setPreviewImage(null);
       setIsPreviewLoading(false);
@@ -89,22 +92,20 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     const handler = setTimeout(async () => {
       try {
         if (!isActive) return;
-        const resultBase64 = await editImage(originalImage, prompt);
+        // Always use 1K for live preview to maintain responsiveness
+        const resultBase64 = await editImage(originalImage, prompt, '1K');
         
         if (isActive) {
           setPreviewImage(resultBase64);
-          setEditedImage(null); // A new preview invalidates the last final image
         }
       } catch (err) {
         console.error("Preview generation failed:", err);
-        // We can optionally clear the preview here, or leave the stale one
-        // setPreviewImage(null); 
       } finally {
         if (isActive) {
           setIsPreviewLoading(false);
         }
       }
-    }, 500); // 500ms debounce for near real-time feel
+    }, 500);
 
     return () => {
       isActive = false;
@@ -112,7 +113,6 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     };
   }, [prompt, originalImage, isLoading]);
 
-  // Load gallery from localStorage on component mount
   useEffect(() => {
     try {
       const storedGallery = localStorage.getItem('editedImageGallery');
@@ -124,7 +124,6 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     }
   }, []);
 
-  // Save gallery to localStorage whenever it changes
   useEffect(() => {
     if (galleryImages.length > 0) {
       try {
@@ -135,7 +134,6 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     }
   }, [galleryImages]);
 
-  // Reset mint status when a new image is edited or selected
   useEffect(() => {
     setMintError(null);
     setMintSuccessTx(null);
@@ -174,17 +172,17 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     setMintSuccessTx(null);
 
     try {
-      const resultBase64 = await editImage(originalImage, prompt);
+      // Respect user's quality choice for final image
+      const resultBase64 = await editImage(originalImage, prompt, quality);
       setEditedImage(resultBase64);
-      // Add the new image to the gallery (at the beginning)
-      setGalleryImages(prevGallery => [resultBase64, ...prevGallery.slice(0, 19)]); // Limit gallery to 20 images
-      setNotification("Task completed successfully.");
+      setGalleryImages(prevGallery => [resultBase64, ...prevGallery.slice(0, 19)]);
+      setNotification(`Final render completed in ${quality} quality.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
-  }, [originalImage, prompt]);
+  }, [originalImage, prompt, quality]);
 
   const handleMint = async () => {
     if (!connectedAccount) {
@@ -196,7 +194,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
         return;
     }
     if (!provider) {
-        setMintError("Wallet provider is not available. Please ensure your wallet is connected.");
+        setMintError("Wallet provider is not available.");
         return;
     }
 
@@ -211,7 +209,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     try {
         const txHash = await mintMeeBot(provider);
         setMintSuccessTx(txHash);
-        onMintSuccess(); // Notify parent to refresh gallery
+        onMintSuccess();
         setNotification("NFT minted successfully!");
     } catch (err) {
         setMintError(err instanceof Error ? err.message : "An unexpected minting error occurred.");
@@ -223,30 +221,22 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
   const handleGallerySelect = (base64Image: string) => {
     const imageFile: ImageFile = {
         base64: base64Image,
-        mimeType: 'image/png', // Gemini returns PNG
+        mimeType: 'image/png',
         name: `gallery-image-${Date.now()}.png`
     };
     setOriginalImage(imageFile);
-    setEditedImage(null); // Clear the edited image view
+    setEditedImage(null);
     setPreviewImage(null);
     setError(null);
     setNotification('Loaded image from gallery for editing.');
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePromptSuggestion = (suggestion: string) => {
-    setPrompt(suggestion);
-    setSelectedBackground(null);
-  };
-  
-  const handleBackgroundSelect = (background: string) => {
-    if (selectedBackground === background) {
-      setSelectedBackground(null);
-      setPrompt('');
-    } else {
-      setSelectedBackground(background);
-      setPrompt(`Change the background to ${background.toLowerCase()}`);
-    }
+  const handleApplyFilter = (filterName: string, filterInstruction: string) => {
+    // If prompt already starts with a filter instruction, we might want to replace it or append
+    // For simplicity, we just set the prompt to have the filter prefix
+    const basePrompt = prompt.replace(/^(Apply a \w+ filter, |Make it \w+, )/i, '');
+    setPrompt(`${filterInstruction}, ${basePrompt || 'enhance the details'}`);
   };
 
   const handleReset = () => {
@@ -254,6 +244,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     setEditedImage(null);
     setPreviewImage(null);
     setPrompt('');
+    setQuality('1K');
     setError(null);
     setNotification(null);
     setMintError(null);
@@ -264,11 +255,12 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
     }
   }
 
-  const promptSuggestions = [
-    "Add a retro, vintage filter",
-    "Make the image black and white",
-    "Add a cat wearing sunglasses",
-    "Remove the person in the background"
+  const filters = [
+    { name: 'Vintage', instruction: 'Apply a vintage, retro film look' },
+    { name: 'Grayscale', instruction: 'Make it black and white with high contrast' },
+    { name: 'Sepia', instruction: 'Add a warm sepia tone' },
+    { name: 'Cyberpunk', instruction: 'Add neon lights and a cyberpunk aesthetic' },
+    { name: 'Cinematic', instruction: 'Apply cinematic lighting and color grading' }
   ];
 
   const backgroundSuggestions = ['Beach', 'Forest', 'Cityscape', 'Space', 'Abstract Colors'];
@@ -308,10 +300,10 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                       <MeeBotDefaultIcon className="w-full h-full" />
                     </div>
                     <p className="font-bold text-2xl text-slate-100">MeeBot is working...</p>
-                    <p className="text-slate-400">Our digital sprite is crafting your image.</p>
+                    <p className="text-slate-400">Rendering in {quality} quality...</p>
                     <div className="flex items-center justify-center space-x-2 text-slate-500">
                         <SpinnerIcon className="w-5 h-5 animate-spin" />
-                        <span>Generating your image...</span>
+                        <span>Generating final image...</span>
                     </div>
                 </div>
             ) : displayImage ? (
@@ -325,7 +317,12 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                         />
                          {!editedImage && (
                             <div className="absolute top-1 right-1 bg-slate-900/80 text-sky-400 text-xs px-2 py-0.5 rounded-full backdrop-blur-sm">
-                                Live Preview
+                                Live Preview (1K)
+                            </div>
+                        )}
+                        {editedImage && (
+                             <div className="absolute top-1 right-1 bg-purple-900/80 text-white text-xs px-2 py-0.5 rounded-full backdrop-blur-sm font-bold">
+                                Final {quality}
                             </div>
                         )}
                     </div>
@@ -333,11 +330,11 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                         <div className="w-full mt-auto space-y-2">
                             <a
                                 href={`data:image/png;base64,${editedImage}`}
-                                download="edited-image.png"
+                                download={`meebot-${quality}.png`}
                                 className="w-full bg-green-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-500 transition-colors flex items-center justify-center"
                             >
                                 <DownloadIcon className="w-5 h-5 mr-2" />
-                                Save Image
+                                Save {quality} Image
                             </a>
                             <button
                                 onClick={handleMint}
@@ -353,7 +350,6 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                             </button>
                         </div>
                     )}
-                     {/* Minting Status */}
                     <div className="w-full text-xs text-center mt-2">
                         {mintSuccessTx && (
                              <div className="text-green-400">
@@ -378,7 +374,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                         <>
                             <WandIcon className="w-12 h-12 mx-auto mb-2" />
                             <p>Your edited image will appear here.</p>
-                             <p className="text-xs mt-1">A live preview will show as you type.</p>
+                             <p className="text-xs mt-1">Updates in real-time as you edit.</p>
                         </>
                     )}
                 </div>
@@ -395,9 +391,54 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
       </div>
       
       {originalImage && (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* Quality Slider */}
+          <div className="bg-slate-900/40 p-4 rounded-lg border border-slate-700/50">
+            <div className="flex justify-between items-center mb-4">
+               <label className="text-sm font-medium text-slate-300">Output Quality</label>
+               <span className="text-xs px-2 py-1 rounded bg-slate-700 text-sky-400 font-mono font-bold">
+                 {quality === '1K' ? 'Standard (Flash)' : quality === '2K' ? 'High (Pro)' : 'Ultra (Pro)'}
+               </span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="2" 
+              step="1"
+              value={quality === '1K' ? 0 : quality === '2K' ? 1 : 2}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                setQuality(val === 0 ? '1K' : val === 1 ? '2K' : '4K');
+              }}
+              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500"
+              disabled={isLoading || isMinting}
+            />
+            <div className="flex justify-between mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+              <span>1K (Fast)</span>
+              <span>2K (Detailed)</span>
+              <span>4K (Master)</span>
+            </div>
+          </div>
+
+          {/* Filters Presets */}
           <div>
-            <label htmlFor="prompt" className="block text-sm font-medium text-slate-300 mb-2">Editing Prompt</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2">Filter Presets</label>
+            <div className="flex flex-wrap gap-2">
+                {filters.map((f) => (
+                <button 
+                  key={f.name} 
+                  onClick={() => handleApplyFilter(f.name, f.instruction)} 
+                  disabled={isLoading || isMinting}
+                  className="text-xs bg-slate-700 hover:bg-sky-600 text-slate-200 px-4 py-2 rounded-full transition-all border border-slate-600 hover:border-sky-400"
+                >
+                  {f.name}
+                </button>
+                ))}
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="prompt" className="block text-sm font-medium text-slate-300 mb-2">Editing Instructions</label>
             <textarea
               id="prompt"
               value={prompt}
@@ -407,12 +448,13 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                     setSelectedBackground(null);
                   }
               }}
-              placeholder="e.g., 'Add a retro filter' or 'Remove the person in the background'"
-              className="w-full bg-slate-900 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow text-slate-200 resize-none"
+              placeholder="e.g., 'Add a retro filter' or 'Change background to Mars'"
+              className="w-full bg-slate-900 border border-slate-700 rounded-md p-3 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-shadow text-slate-200 resize-none h-24"
               rows={3}
               disabled={isLoading || isMinting}
             />
           </div>
+
           <div className="space-y-3">
             <div>
                 <label className="block text-xs font-medium text-slate-400 mb-2">Quick Backgrounds</label>
@@ -420,7 +462,10 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                     {backgroundSuggestions.map((bg) => (
                     <button 
                         key={bg} 
-                        onClick={() => handleBackgroundSelect(bg)} 
+                        onClick={() => {
+                          setSelectedBackground(bg);
+                          setPrompt(`Change the background to a beautiful ${bg.toLowerCase()}`);
+                        }} 
                         disabled={isLoading || isMinting} 
                         className={`text-xs px-3 py-1.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                             selectedBackground === bg 
@@ -433,39 +478,30 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
                     ))}
                 </div>
             </div>
-             <div>
-                <label className="block text-xs font-medium text-slate-400 mb-2">Prompt Suggestions</label>
-                <div className="flex flex-wrap gap-2">
-                    {promptSuggestions.map((s) => (
-                    <button key={s} onClick={() => handlePromptSuggestion(s)} disabled={isLoading || isMinting} className="text-xs bg-slate-700 text-slate-300 px-3 py-1 rounded-full hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        {s}
-                    </button>
-                    ))}
-                </div>
-            </div>
           </div>
+
           <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-700/50">
             <button
               onClick={handleSubmit}
               disabled={isLoading || !prompt || !originalImage || isMinting}
-              className="w-full bg-sky-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-sky-500 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-sky-600 text-white px-6 py-4 rounded-md font-bold hover:bg-sky-500 transition-all disabled:bg-slate-600 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-sky-900/20"
             >
               {isLoading ? (
                 <>
                   <SpinnerIcon className="w-5 h-5 mr-2 animate-spin" />
-                  Generating...
+                  Rendering Final {quality}...
                 </>
               ) : (
                 <>
                   <WandIcon className="w-5 h-5 mr-2" />
-                  Generate Final Image
+                  Generate Final Render ({quality})
                 </>
               )}
             </button>
              <button
               onClick={handleReset}
               disabled={isLoading || isMinting}
-              className="w-full bg-slate-700 text-slate-300 px-6 py-3 rounded-md font-semibold hover:bg-slate-600 transition-colors disabled:opacity-50"
+              className="bg-slate-700 text-slate-300 px-6 py-4 rounded-md font-semibold hover:bg-slate-600 transition-colors disabled:opacity-50"
             >
               Reset
             </button>
@@ -479,7 +515,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
         </div>
       )}
       {notification && !error && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-700 text-slate-200 px-6 py-3 rounded-full shadow-lg animate-[meebot-fadeIn_420ms_ease-out_both]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-700 text-slate-200 px-6 py-3 rounded-full shadow-lg animate-[meebot-fadeIn_420ms_ease-out_both] z-[60]">
           <div className="flex items-center space-x-2">
             <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -491,7 +527,6 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ provider, connectedAccount, o
         </div>
       )}
 
-       {/* Gallery Section */}
       <div className="mt-8 pt-6 border-t border-slate-700">
         <h2 className="text-lg font-semibold text-slate-300 mb-4">Your Recent Edits</h2>
         {galleryImages.length > 0 ? (
