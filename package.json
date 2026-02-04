@@ -9,15 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
     "@google/genai": "^1.29.1",
-    "ethers": "^6.15.0",
-    "firebase": "^12.5.0"
+    "firebase": "^12.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "dotenv": "^17.2.3",
+    "ethers": "^5.8.0",
+    "hardhat": "^3.1.6",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
