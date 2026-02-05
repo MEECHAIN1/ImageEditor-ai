@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 
 
 interface ImageEditorProps {
-  provider: ethers.BrowserProvider | null;
+  provider: ethers.providers.Web3Provider | null;
   connectedAccount: string | null;
   onConnectWallet: () => void;
   onMintSuccess: () => void;

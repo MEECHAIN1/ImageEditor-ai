@@ -16,7 +16,7 @@ import { getVoiceForMood } from '../../lib/voiceUtils';
 
 interface GeneratorProps {
     dark?: boolean;
-    provider: ethers.BrowserProvider | null;
+    provider: ethers.providers.Web3Provider | null;
     connectedAccount: string | null;
     onConnectWallet: () => void;
     onMintSuccess: (result: { metadata: any; txHash: string; }) => void;

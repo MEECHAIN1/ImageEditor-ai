@@ -68,7 +68,7 @@ const detectEthereumProvider = (timeout = 1000): Promise<any | null> => {
 };
 
 export function useWallet() {
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
   const [connectedAccount, setConnectedAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<number | null>(null);
   // FIX: Add chainId to the network state object to make it available to components.
@@ -78,9 +78,9 @@ export function useWallet() {
 
   const updateWalletState = useCallback(async (ethereum: any, account: string | null) => {
     if (account) {
-      const newProvider = new ethers.BrowserProvider(ethereum);
+      const newProvider = new ethers.providers.Web3Provider(ethereum);
       const networkInfo = await newProvider.getNetwork();
-      const currentChainId = Number(networkInfo.chainId);
+      const currentChainId = networkInfo.chainId;
       setProvider(newProvider);
       setConnectedAccount(account);
       setChainId(currentChainId);
@@ -163,11 +163,10 @@ export function useWallet() {
     const setupWallet = async () => {
       const ethereum = await detectEthereumProvider(500);
       if (ethereum) {
-        const newProvider = new ethers.BrowserProvider(ethereum);
-        const signers = await newProvider.listAccounts();
-        if (signers.length > 0 && signers[0]) {
-            const address = await signers[0].getAddress();
-            await updateWalletState(ethereum, address);
+        const newProvider = new ethers.providers.Web3Provider(ethereum);
+        const accounts = await newProvider.listAccounts();
+        if (accounts.length > 0) {
+            await updateWalletState(ethereum, accounts[0]);
         }
 
         const handleAccountsChanged = (accounts: string[]) => {

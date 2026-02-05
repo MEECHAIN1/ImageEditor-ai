@@ -11,7 +11,7 @@ import NFTGallery from './dashboard/NFTGallery';
 import { ethers } from 'ethers';
 
 interface MeeBotStationProps {
-  provider: ethers.BrowserProvider | null;
+  provider: ethers.providers.Web3Provider | null;
   connectedAccount: string | null;
   onConnectWallet: () => void;
   onMintSuccess: (result: { metadata: any; txHash: string; }) => void;

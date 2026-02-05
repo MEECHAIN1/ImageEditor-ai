@@ -23,7 +23,7 @@ interface NFT {
 }
 
 interface NFTGalleryProps {
-  provider: ethers.BrowserProvider | null;
+  provider: ethers.providers.Web3Provider | null;
   connectedAccount: string | null;
   refreshKey: number;
   network: any | null;

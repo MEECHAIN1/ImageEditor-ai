@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
-import { getOwnedMeeBots } from '../services/web3Service';
+import { getOwnedMeeBots } from '../src/lib/services/web3Service';
 import { SpinnerIcon } from './Icons';
 import NFTViewer from '../src/components/NFTViewer'; // Import the new viewer
 import { parts } from '../src/lib/meebotParts'; // Import parts for dynamic filters
@@ -16,7 +16,7 @@ interface NFT {
 }
 
 interface NFTGalleryProps {
-  provider: ethers.BrowserProvider;
+  provider: ethers.providers.Web3Provider;
   connectedAccount: string;
   refreshKey: number;
 }

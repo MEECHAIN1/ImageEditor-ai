@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
 
 // Placeholder for mainnet contracts, indicating that minting is not yet live.
-const PLACEHOLDER_ADDRESS = ethers.getAddress("0x000000000000000000000000000000000000dEaD");
+const PLACEHOLDER_ADDRESS = ethers.utils.getAddress("0x000000000000000000000000000000000000dEaD");
 
 export const CONTRACT_ADDRESSES: { [chainId: number]: string } = {
     // Sepolia Testnet - Live for testing
-    [11155111]: ethers.getAddress("0x247b882195a3358547432aab8eaa2825126a4f50"),
+    [11155111]: ethers.utils.getAddress("0x247b882195a3358547432aab8eaa2825126a4f50"),
     // Mainnets - Placeholders
     [1]: PLACEHOLDER_ADDRESS,          // Ethereum
     [137]: PLACEHOLDER_ADDRESS,       // Polygon
@@ -62,7 +62,7 @@ async function getContractAbi(): Promise<any[]> {
  * @param provider An ethers BrowserProvider instance from the user's wallet.
  * @returns A promise that resolves with the transaction hash.
  */
-export async function mintMeeBot(provider: ethers.BrowserProvider): Promise<string> {
+export async function mintMeeBot(provider: ethers.providers.Web3Provider): Promise<string> {
   if (!provider) {
     throw new Error("Wallet provider is not available. Please connect your wallet.");
   }
@@ -108,7 +108,7 @@ export async function mintMeeBot(provider: ethers.BrowserProvider): Promise<stri
  * @param tokenURI The IPFS URI for the NFT metadata.
  * @returns A promise that resolves with the transaction hash.
  */
-export async function mintAiMeeBot(provider: ethers.BrowserProvider, tokenURI: string): Promise<string> {
+export async function mintAiMeeBot(provider: ethers.providers.Web3Provider, tokenURI: string): Promise<string> {
   if (!provider) {
     throw new Error("Wallet provider is not available. Please connect your wallet.");
   }
@@ -190,7 +190,7 @@ async function fetchFromIPFS(ipfsUri: string): Promise<Response> {
  * @param provider An ethers BrowserProvider instance.
  * @returns A promise that resolves with an array of NFT metadata objects.
  */
-export async function getOwnedMeeBots(provider: ethers.BrowserProvider) {
+export async function getOwnedMeeBots(provider: ethers.providers.Web3Provider) {
     try {
         const network = await provider.getNetwork();
         const chainId = Number(network.chainId);
