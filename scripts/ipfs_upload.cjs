@@ -1,6 +1,7 @@
 /**
  * 🛰️ MeeChain IPFS Automation Script (Executable Version)
  * สคริปต์สำหรับอัปโหลดรูปภาพและการ์ด Metadata ขึ้น IPFS อัตโนมัติ
+ * อัปเดตข้อมูล Pinata API สำหรับคุณธณวัฒน์เรียบร้อยแล้ว
  */
 
 const axios = require('axios');
@@ -8,16 +9,17 @@ const fs = require('fs');
 const FormData = require('form-data');
 const path = require('path');
 
-// 🔑 สำคัญ: กรุณาเติม API Key จาก Pinata ของคุณที่นี่
-const PINATA_API_KEY = "YOUR_PINATA_API_KEY";
-const PINATA_SECRET_KEY = "YOUR_PINATA_SECRET_KEY";
+// 🔑 ข้อมูล API จาก Pinata ของคุณธณวัฒน์ (Updated)
+const PINATA_API_KEY = "9adc1b90e80c62b6453f";
+const PINATA_SECRET_KEY = "b506a274466f4fda765af877adcb36897b2b9c63e61a83c35714dd570560591d";
+const PINATA_GATEWAY = "tan-familiar-impala-721.mypinata.cloud";
 
 /**
  * ฟังก์ชันสำหรับอัปโหลดไฟล์รูปภาพ
  */
 async function uploadImageToIPFS(filePath) {
     if (!fs.existsSync(filePath)) {
-        throw new Error(`❌ ไม่พบไฟล์รูปภาพที่: ${filePath} กรุณาเตรียมไฟล์ภาพไว้ในโฟลเดอร์ assets`);
+        throw new Error(`❌ ไม่พบไฟล์รูปภาพที่: ${filePath} กรุณานำรูปภาพไปวางที่ assets/genesis_card.png`);
     }
 
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
@@ -54,25 +56,14 @@ async function uploadMetadataToIPFS(metadata) {
  */
 async function runAutoUpload() {
     try {
-        if (PINATA_API_KEY === "YOUR_PINATA_API_KEY") {
-            console.log("❌ ERROR: กรุณาใส่ Pinata API Key ในไฟล์ ipfs_upload.js ก่อนรันครับ");
-            return;
-        }
-
         console.log("--------------------------------------------------");
-        console.log("🧪 MeeBot กำลังเริ่มกระบวนการ IPFS Upload...");
+        console.log("🧪 MeeBot Lab: เริ่มกระบวนการ IPFS Upload...");
+        console.log("🛰️ Gateway:", PINATA_GATEWAY);
         console.log("--------------------------------------------------");
 
-        // 1. ตรวจสอบและสร้างโฟลเดอร์ assets ถ้ายังไม่มี
-        const assetsDir = './assets';
-        if (!fs.existsSync(assetsDir)){
-            fs.mkdirSync(assetsDir);
-            console.log("📁 สร้างโฟลเดอร์ ./assets เรียบร้อย กรุณานำรูป genesis_card.png ไปวางในนั้นครับ");
-            return;
-        }
+        const imagePath = path.join('assets', 'genesis_card.png');
 
-        const imagePath = path.join(assetsDir, 'genesis_card.png');
-
+        // 1. อัปโหลดรูปภาพ
         console.log("🖼️ 1. กำลังอัปโหลดรูปภาพไปยัง IPFS...");
         const imageCID = await uploadImageToIPFS(imagePath);
         console.log(`✅ รูปภาพอัปโหลดสำเร็จ! CID: ${imageCID}`);
@@ -82,7 +73,7 @@ async function runAutoUpload() {
             name: "MeeChain Genesis Card #01",
             description: "รางวัลเกียรติยศสำหรับผู้ร่วมวิจัยใน MeeChain Lab",
             image: `ipfs://${imageCID}`,
-            external_url: "https://meechain.io",
+            external_url: `https://${PINATA_GATEWAY}/ipfs/${imageCID}`,
             attributes: [
                 { "trait_type": "Mission", "value": "Genesis Onboarding" },
                 { "trait_type": "Researcher", "value": "Thanawat" },
@@ -97,10 +88,12 @@ async function runAutoUpload() {
         console.log(`✅ Metadata อัปโหลดสำเร็จ! CID: ${jsonCID}`);
 
         console.log("--------------------------------------------------");
-        console.log("🎯 สำเร็จ! MeeBot พร้อมให้คุณนำไป Mint แล้ว:");
-        console.log(`URL: ipfs://${jsonCID}`);
+        console.log("🎯 สำเร็จ! ข้อมูลสำหรับการ Mint พร้อมแล้ว:");
+        console.log(`JSON CID: ${jsonCID}`);
+        console.log(`IPFS URL: ipfs://${jsonCID}`);
+        console.log(`Gateway Preview: https://${PINATA_GATEWAY}/ipfs/${jsonCID}`);
         console.log("--------------------------------------------------");
-        console.log(`💡 คำสั่งถัดไปใน Lab: /mint ${jsonCID}`);
+        console.log(`💡 ขั้นตอนต่อไปใน Lab: พิมพ์ /mint ${jsonCID} ในแชท MeeBot`);
         console.log("--------------------------------------------------");
 
     } catch (error) {
@@ -114,5 +107,5 @@ async function runAutoUpload() {
     }
 }
 
-// 🚀 รันสคริปต์ทันที
+// 🚀 เริ่มทำงานทันที
 runAutoUpload();
