@@ -69,20 +69,9 @@ export default function MeeBotLiveChat(): React.ReactElement {
     setIsConnecting(true);
     
     try {
-       // Check for API key before asking for media permissions or initializing AudioContexts.
-      if (window.aistudio && !(await window.aistudio.hasSelectedApiKey())) {
-        try {
-          await window.aistudio.openSelectKey();
-        } catch (e) {
-          setError("An API key must be selected from your user settings to begin the chat.");
-          setIsConnecting(false);
-          return;
-        }
-      }
-
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI(process.env.GEMINI_API_KEY || "");
 
       // FIX: Cast window to `any` to access vendor-prefixed `webkitAudioContext` for Safari compatibility, resolving TypeScript errors.
       inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -93,7 +82,7 @@ export default function MeeBotLiveChat(): React.ReactElement {
       let currentOutputTranscription = '';
 
       sessionPromiseRef.current = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+        model: 'gemini-2.0-flash-exp',
         callbacks: {
           onopen: () => {
             setIsConnecting(false);

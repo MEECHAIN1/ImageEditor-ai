@@ -39,3 +39,8 @@ deploymentTarget = "static"
 run = ["npx", "serve"]
 build = ["npm", "run", "build"]
 publicDir = "dist"
+
+[userenv]
+
+[userenv.shared]
+API_KEY = "AIzaSyARryQpcyRRNNPWA1sl1KIIZzrElzOkfNU"
