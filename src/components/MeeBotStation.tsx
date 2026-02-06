@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState } from 'react';
 import MeeBotWelcome from './meebot/MeeBotWelcome';
 import { MeeBotDefaultIcon } from '../../components/Icons';

@@ -5,7 +5,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged, Auth } from "firebase/a
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBhprcnCRZVHE3df9wvK9VkQdSUwiGw11E",
+  apiKey: "AIzaSyB--wavecfMA8iH7gTs1fJ0TJnJ7YYLbEw",
   authDomain: "meechainmeebot-v1-218162-261fc.firebaseapp.com",
   projectId: "meechainmeebot-v1-218162-261fc",
   storageBucket: "meechainmeebot-v1-218162-261fc.appspot.com",

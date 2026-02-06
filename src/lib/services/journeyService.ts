@@ -1,4 +1,3 @@
-
 const getJourneyKey = (userAddress: string) => `meebot_journey_${userAddress}`;
 
 /**
