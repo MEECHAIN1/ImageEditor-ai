@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { animationClasses } from '../lib/meeBotAnimations';
 import { trackEvent } from '../lib/analytics';

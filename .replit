@@ -1,4 +1,4 @@
-modules = ["nodejs-24", "web"]
+modules = ["nodejs-22", "web"]
 
 [agent]
 expertMode = true
@@ -24,19 +24,48 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "npm install"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[[workflows.workflow]]
+name = "npx hardhat node"
+mode = "sequential"
+author = 53897991
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx hardhat node --port 8080"
+
+[[workflows.workflow]]
+name = " run dev"
+mode = "sequential"
+author = 53897991
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 5001
+externalPort = 3000
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
 [deployment]
 deploymentTarget = "static"
-run = ["npx", "serve"]
 build = ["npm", "run", "build"]
 publicDir = "dist"
 
