@@ -1,0 +1,297 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Compass, 
+  Wallet, 
+  Zap, 
+  ShieldCheck, 
+  Database, 
+  Award, 
+  ChevronRight, 
+  Info,
+  ExternalLink,
+  Bot
+} from 'lucide-react';
+
+const App = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [isMinting, setIsMinting] = useState(false);
+  const [showReward, setShowReward] = useState(false);
+
+  // ข้อมูลขั้นตอนการใช้งาน
+  const steps = [
+    {
+      title: "1. Onboarding ผ่าน MeeBot",
+      description: "เชื่อมต่อ Wallet ของคุณและสร้าง Identity บน MeeChain โดยมี MeeBot เป็นผู้นำทาง (Guide)",
+      icon: <Bot className="w-6 h-6 text-cyan-500" />,
+      action: "เชื่อมต่อ Wallet",
+      details: "MeeBot จะช่วยสร้าง Account Abstracted Wallet ให้คุณโดยอัตโนมัติ ไม่ต้องจำ Seed Phrase"
+    },
+    {
+      title: "2. เลือกภารกิจ (Select Missions)",
+      description: "เลือกภารกิจที่ต้องการทำจากบอร์ด เพื่อสะสม XP และรับการ์ด NFT พิเศษ",
+      icon: <Compass className="w-6 h-6 text-purple-500" />,
+      action: "ดูภารกิจทั้งหมด",
+      details: "ภารกิจมีทั้งแบบ On-chain (การโอน) และ Off-chain (กิจกรรมโซเชียล)"
+    },
+    {
+      title: "3. ยืนยันผล (Verification)",
+      description: "ระบบ Smart Contract จะตรวจสอบเงื่อนไขภารกิจผ่าน MeeChain Event Log",
+      icon: <ShieldCheck className="w-6 h-6 text-green-500" />,
+      action: "ตรวจสอบเงื่อนไข",
+      details: "ความโปร่งใสระดับสูงสุด ทุกการกระทำถูกบันทึกไว้ตรวจสอบได้"
+    },
+    {
+      title: "4. รับ NFT Card (IPFS Powered)",
+      description: "เมื่อสำเร็จ ภารกิจจะ Mint การ์ด NFT โดย metadata จะถูกเก็บไว้ที่ IPFS ตลอดกาล",
+      icon: <Award className="w-6 h-6 text-yellow-500" />,
+      action: "Mint NFT Card",
+      details: "รูปภาพและคุณสมบัติของการ์ดถูกกระจายศูนย์ (Decentralized) ป้องกันข้อมูลสูญหาย"
+    }
+  ];
+
+  const handleMint = () => {
+    setIsMinting(true);
+    setTimeout(() => {
+      setIsMinting(false);
+      setShowReward(true);
+    }, 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#00f0dc] font-sans selection:bg-cyan-200" 
+         style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/robots.png")` }}>
+      
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-cyan-100 sticky top-0 z-50 p-4 shadow-sm">
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+              <Zap className="text-[#00f0dc] fill-current" />
+            </div>
+            <span className="font-black text-2xl tracking-tighter italic">MEECHAIN</span>
+          </div>
+          <div className="flex gap-4">
+            <button className="px-4 py-2 text-sm font-bold border-2 border-black rounded-lg hover:bg-black hover:text-white transition-all">
+              MeeScan
+            </button>
+            <button className="px-4 py-2 text-sm font-bold bg-black text-white rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none transition-all">
+              Connect Wallet
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-5xl mx-auto p-6 md:p-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          
+          {/* Left Side: Instructions */}
+          <div className="space-y-8">
+            <div className="bg-white p-8 rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+              <h1 className="text-4xl font-black mb-4 uppercase leading-tight">MeeChain <br/>เริ่มใช้งานอย่างไร?</h1>
+              <p className="text-gray-600 font-medium text-lg leading-relaxed">
+                เรียนรู้ระบบการทำงานแบบ Modular ที่เชื่อมต่อระหว่าง Smart Contract, MeeBot และ IPFS เพื่อประสบการณ์ Web3 ที่ไร้รอยต่อ
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {steps.map((step, idx) => (
+                <div 
+                  key={idx}
+                  onClick={() => setActiveStep(idx)}
+                  className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex gap-4 ${
+                    activeStep === idx 
+                    ? 'bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] translate-x-2' 
+                    : 'bg-white/40 border-transparent hover:bg-white/60'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${activeStep === idx ? 'bg-black text-white' : 'bg-white border border-gray-200'}`}>
+                    {step.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{step.title}</h3>
+                    <p className="text-gray-600 text-sm">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Side: Interactive Preview */}
+          <div className="sticky top-32">
+            <div className="bg-black rounded-[40px] p-2 shadow-2xl relative overflow-hidden">
+              <div className="bg-gray-100 rounded-[32px] p-6 min-h-[500px] flex flex-col">
+                
+                {/* Simulated App Screen */}
+                <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6">
+                  {activeStep === 0 && (
+                    <div className="space-y-4 animate-in fade-in zoom-in">
+                      <div className="w-24 h-24 bg-cyan-200 rounded-full mx-auto flex items-center justify-center border-4 border-black">
+                        <Bot className="w-12 h-12" />
+                      </div>
+                      <h2 className="text-2xl font-black italic">MeeBot Onboarding</h2>
+                      <p className="text-sm text-gray-500 max-w-xs">สวัสดีครับ! ผม MeeBot จะช่วยสร้างกระเป๋าเงินใบแรกของคุณบน MeeChain</p>
+                      <button className="w-full bg-black text-[#00f0dc] font-bold py-3 rounded-xl shadow-lg">ยืนยันตัวตน</button>
+                    </div>
+                  )}
+
+                  {activeStep === 1 && (
+                    <div className="w-full space-y-4 animate-in slide-in-from-bottom-4">
+                      <h2 className="text-xl font-bold flex items-center gap-2 justify-center">
+                        <Compass className="w-5 h-5" /> ภารกิจปัจจุบัน
+                      </h2>
+                      <div className="bg-white border-2 border-black p-4 rounded-2xl text-left hover:scale-[1.02] transition-transform">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-xs font-black px-2 py-1 bg-cyan-100 rounded uppercase">Genesis</span>
+                          <span className="text-xs text-green-600 font-bold">100 XP</span>
+                        </div>
+                        <p className="font-bold text-sm">ถือเหรียญ MEE ครั้งแรก</p>
+                        <div className="w-full bg-gray-100 h-2 rounded-full mt-3">
+                          <div className="bg-black h-full rounded-full w-0"></div>
+                        </div>
+                      </div>
+                      <div className="bg-white border-2 border-black p-4 rounded-2xl text-left opacity-50 grayscale">
+                        <p className="font-bold text-sm italic text-gray-400">Locked: ทำภารกิจก่อนหน้าเพื่อปลดล็อก</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeStep === 2 && (
+                    <div className="space-y-6 animate-in fade-in">
+                      <ShieldCheck className="w-16 h-16 text-green-500 mx-auto" />
+                      <h2 className="text-xl font-bold italic uppercase">Verifying Smart Contract</h2>
+                      <div className="font-mono text-[10px] bg-gray-900 text-green-400 p-4 rounded-xl text-left overflow-hidden h-32 w-full">
+                        <p>{">"} CALL mission_verify(wallet_addr)</p>
+                        <p>{">"} CHECK balance_of(MEE_TOKEN) {">"} 0</p>
+                        <p className="animate-pulse">{">"} SUCCESS: LOGGING EVENT TO CHAIN...</p>
+                        <p>{">"} BLOCK_HEIGHT: 12,450,231</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeStep === 3 && (
+                    <div className="space-y-6 animate-in zoom-in duration-500 w-full px-4">
+                      {!showReward ? (
+                        <div className="bg-white p-6 rounded-3xl border-4 border-dashed border-gray-300">
+                          <Award className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                          <p className="text-sm font-medium text-gray-500">ภารกิจสำเร็จ! พร้อมรับรางวัล</p>
+                          <button 
+                            disabled={isMinting}
+                            onClick={handleMint}
+                            className="mt-6 w-full bg-black text-[#00f0dc] font-black py-4 rounded-2xl hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+                          >
+                            {isMinting ? "MINTING ON IPFS..." : "CLAIM NFT CARD"}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="relative group perspective-1000">
+                            <div className="w-48 h-64 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl mx-auto border-4 border-white shadow-2xl flex items-center justify-center p-2 transform transition-all duration-700 hover:rotate-y-12">
+                              <div className="bg-white/20 backdrop-blur-sm w-full h-full rounded-xl flex flex-col items-center justify-center border border-white/30 text-white">
+                                <span className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-80 underline underline-offset-4 decoration-white">IPFS HASH: QmXo...v72a</span>
+                                <Bot className="w-16 h-16 mb-4 filter drop-shadow-lg" />
+                                <span className="font-black text-lg italic">GENESIS CARD #01</span>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-green-600 font-black uppercase text-sm animate-bounce">สำเร็จ! ยินดีด้วยครับ</p>
+                          <div className="flex gap-2 justify-center">
+                            <button className="px-3 py-1 bg-white border border-black rounded-lg text-[10px] font-bold flex items-center gap-1">
+                              VIEW ON IPFS <ExternalLink size={10} />
+                            </button>
+                            <button className="px-3 py-1 bg-white border border-black rounded-lg text-[10px] font-bold flex items-center gap-1">
+                              SHARE <Compass size={10} />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Info Bar */}
+                <div className="mt-auto pt-6 border-t border-gray-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Database className="w-4 h-4 text-gray-400" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Powered by MeeChain Engine</span>
+                  </div>
+                  <div className="flex -space-x-2">
+                    <div className="w-6 h-6 rounded-full bg-cyan-400 border-2 border-gray-100"></div>
+                    <div className="w-6 h-6 rounded-full bg-purple-400 border-2 border-gray-100"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            {/* Legend */}
+            <div className="mt-6 flex gap-3 flex-wrap">
+               <div className="bg-white/60 backdrop-blur px-3 py-2 rounded-xl text-xs font-bold border border-black/5 flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                 Chain: Online
+               </div>
+               <div className="bg-white/60 backdrop-blur px-3 py-2 rounded-xl text-xs font-bold border border-black/5 flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
+                 IPFS Node: Active
+               </div>
+               <div className="bg-white/60 backdrop-blur px-3 py-2 rounded-xl text-xs font-bold border border-black/5 flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+                 Modular Indexer: Syncing
+               </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Technical Summary */}
+        <section className="mt-20 space-y-8">
+          <div className="flex items-center gap-4">
+             <div className="h-px bg-black flex-1"></div>
+             <h2 className="text-2xl font-black italic uppercase shrink-0">เบื้องหลังการทำงาน (Technical Flow)</h2>
+             <div className="h-px bg-black flex-1"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-3xl border-2 border-black hover:-translate-y-2 transition-transform">
+              <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center mb-4 border border-black/10">
+                <Info className="text-cyan-600" />
+              </div>
+              <h4 className="font-bold mb-2 uppercase">MeeBot Service</h4>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                ทำหน้าที่เป็น Relay และ Transaction Abstraction ช่วยให้ผู้ใช้ไม่ต้องจ่าย Gas fee เองในช่วงแรก และเป็น Interface หลักในการรับภารกิจผ่านแชท
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl border-2 border-black hover:-translate-y-2 transition-transform">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4 border border-black/10">
+                <Database className="text-purple-600" />
+              </div>
+              <h4 className="font-bold mb-2 uppercase">IPFS Integration</h4>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                เราไม่ได้เก็บรูปภาพไว้บน Chain ตรงๆ แต่เก็บ "CID" (Content Identifier) ที่ชี้ไปยัง IPFS เพื่อลดภาระของ Chain และรับประกันว่ารูปการ์ดจะไม่มีวันถูกลบ
+              </p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl border-2 border-black hover:-translate-y-2 transition-transform">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4 border border-black/10">
+                <ShieldCheck className="text-green-600" />
+              </div>
+              <h4 className="font-bold mb-2 uppercase">Modular Smart Contract</h4>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                ระบบภารกิจถูกแยกเป็น Module (Logic) แยกจาก Contract เก็บ NFT หลัก (Storage) ทำให้เราสามารถเพิ่มภารกิจใหม่ๆ ได้โดยไม่ต้อง Deploy Contract ใหม่ทั้งหมด
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-20 p-12 bg-black text-white text-center">
+        <p className="font-black text-xl italic mb-2 tracking-tighter">MEECHAIN FRAMEWORK v1.0</p>
+        <p className="text-gray-400 text-sm">ออกแบบเพื่อความโปร่งใส ความเร็ว และความเป็นเจ้าของที่แท้จริง</p>
+      </footer>
+
+    </div>
+  );
+};
+
+export default App;
