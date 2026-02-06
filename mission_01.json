@@ -1,0 +1,30 @@
+{
+  "name": "MeeChain Genesis Card #01",
+  "description": "การ์ดเกียรติยศสำหรับผู้ร่วมบุกเบิก MeeChain ในภารกิจ Onboarding สำเร็จเป็นกลุ่มแรก",
+  "image": "ipfs://[CID_OF_YOUR_IMAGE]",
+  "external_url": "[https://meechain.io/dashboard](https://meechain.io/dashboard)",
+  "background_color": "00f0dc",
+  "attributes": [
+    {
+      "trait_type": "Mission Name",
+      "value": "Genesis Onboarding"
+    },
+    {
+      "trait_type": "XP Earned",
+      "value": 100
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Card Type",
+      "value": "Utility"
+    },
+    {
+      "display_type": "boost_percentage",
+      "trait_type": "Mining Boost",
+      "value": 5
+    }
+  ]
+}
