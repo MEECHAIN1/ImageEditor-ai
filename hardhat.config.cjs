@@ -14,16 +14,13 @@ module.exports = {
     },
   },
   networks: {
-    // ใช้สำหรับทดสอบใน memory chain ของ Hardhat
     hardhat: {
       chainId: 13390,
     },
-    // ใช้สำหรับทดสอบกับ local Hardhat node
     localhost: {
       url: "http://127.0.0.1:8080",
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
-    // ใช้สำหรับ deploy ไปที่ MeeChain Ritual chain จริง
     ritual: {
       url: "https://rpc.meechain.run.place",
       chainId: 13390,
