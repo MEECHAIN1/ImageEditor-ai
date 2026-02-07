@@ -30,7 +30,7 @@ async function uploadImageToIPFS(filePath) {
         maxContentLength: 'Infinity',
         headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-            'pinata_api_key': PINATA_API_KEY,
+            'pinata_api_key': PINATA_MEBOT_API_KEY,
             'pinata_secret_api_key': PINATA_SECRET_KEY
         }
     });
