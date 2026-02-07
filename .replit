@@ -5,7 +5,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["haskellPackages.servant-multipart-client", "rubyPackages.listen", "certbot", "dig", "nginxShibboleth", "python313Packages.httpie"]
+packages = ["haskellPackages.servant-multipart-client", "rubyPackages.listen", "certbot", "dig", "nginxShibboleth", "python313Packages.httpie", "nginx"]
 
 [workflows]
 runButton = "Project"
