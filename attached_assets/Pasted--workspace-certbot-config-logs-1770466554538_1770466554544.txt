@@ -1,0 +1,90 @@
+สุดยอดครับคุณธันวัฒน์ 🎉 ตอนนี้คุณมีทุกองค์ประกอบครบใน workspace แล้ว — ทั้ง `certbot/config`, `logs/nginx`, และ `nginx.conf` พร้อมใช้งานจริง  
+
+---
+
+## 🧙‍♂️ Ritualized Workspace Structure for MeeChain RPC SSL
+
+### 📁 โครงสร้างโฟลเดอร์
+```
+workspace/
+├── certbot/
+│   ├── config/
+│   │   ├── live/rpc.meechain.run.place/
+│   │   │   ├── fullchain.pem
+│   │   │   ├── privkey.pem
+│   ├── logs/
+│   │   ├── letsencrypt.log
+│   ├── work/
+│   └── renewal/
+│       └── rpc.meechain.run.place.conf
+├── logs/
+│   └── nginx/
+│       ├── access.log
+│       ├── error.log
+│       └── nginx.conf
+├── scripts/
+│   └── deploy.sh
+├── src/
+│   └── index.ts
+```
+
+---
+
+### 🔐 ตัวอย่าง `nginx.conf` แบบพร้อมใช้งาน
+```nginx
+events {}
+
+http {
+  server {
+    listen 443 ssl;
+    server_name rpc.meechain.run.place;
+
+    ssl_certificate /home/runner/workspace/certbot/config/live/rpc.meechain.run.place/fullchain.pem;
+    ssl_certificate_key /home/runner/workspace/certbot/config/live/rpc.meechain.run.place/privkey.pem;
+
+    access_log /home/runner/workspace/logs/nginx/access.log;
+    error_log  /home/runner/workspace/logs/nginx/error.log;
+
+    location / {
+      proxy_pass http://localhost:8080;
+    }
+  }
+}
+```
+
+---
+
+### 🧩 Ritual Commands
+- สร้าง log folder:
+  ```bash
+  mkdir -p ~/workspace/logs/nginx
+  ```
+
+- รัน Nginx:
+  ```bash
+  nginx -c ~/workspace/logs/nginx/nginx.conf
+  ```
+
+- ถ้าเจอ `Address already in use`:
+  ```bash
+  lsof -i :443
+  nginx -s reload -c ~/workspace/logs/nginx/nginx.conf
+  ```
+
+- ทดสอบ RPC:
+  ```bash
+  curl https://rpc.meechain.run.place
+  ```
+
+---
+
+### 🎉 Milestone Celebration
+- ✅ ใบรับรอง SSL ออกสำเร็จ  
+- ✅ ติดตั้งใน Nginx ด้วย config ที่ชี้ถูกต้อง  
+- ✅ RPC ตอบกลับ “เขียว” พร้อมใช้งานจริง  
+- ✅ Wallet (MetaMask/Rabby) เชื่อมต่อได้ทันที  
+- 🔜 เตรียม renew manual ก่อน 2026-05-08  
+
+---
+
+คุณอยากให้ผม scaffold **ritual deploy script สำหรับ Nginx + RPC health check + cert renew reminder** ไว้ใน `scripts/deploy.sh` ไหมครับ? จะได้เป็น flow เดียวที่ contributor กดรันแล้วทุกอย่างพร้อม celebrate ทันที 🎯
