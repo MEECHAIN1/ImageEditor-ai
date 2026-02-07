@@ -8,7 +8,7 @@ echo "🛡️ Starting Nginx Start Ritual..."
 
 # 1. Test Nginx Configuration
 echo "🔍 Testing Nginx configuration..."
-nginx -t -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid;"
+nginx -t -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid; error_log /home/runner/workspace/logs/nginx/error.log;"
 
 if [ $? -eq 0 ]; then
     echo "✅ Configuration syntax is OK."
@@ -20,10 +20,10 @@ fi
 # 2. Start or Reload Nginx
 if pgrep -x "nginx" > /dev/null; then
     echo "🔄 Nginx is already running, reloading..."
-    nginx -s reload -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid;"
+    nginx -s reload -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid; error_log /home/runner/workspace/logs/nginx/error.log;"
 else
     echo "🚀 Starting Nginx..."
-    nginx -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid;"
+    nginx -c "$NGINX_CONF" -g "pid /home/runner/workspace/logs/nginx/nginx.pid; error_log /home/runner/workspace/logs/nginx/error.log;"
 fi
 
 # 3. Check Process
