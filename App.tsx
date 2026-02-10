@@ -9,7 +9,7 @@ import ProposalGrid from './components/dashboard/ProposalGrid';
 import MyJourney from './components/dashboard/MyJourney';
 import ImageEditor from './components/ImageEditor';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
-import { addTimelineEvent } from './src/lib/services/journeyService';
+import { addTimelineEvent } from './lib/services/journeyService';
 
 
 const WrongNetworkBanner: React.FC<{ onSwitch: (chainId: number) => void }> = ({ onSwitch }) => (
