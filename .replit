@@ -5,7 +5,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["haskellPackages.servant-multipart-client", "rubyPackages.listen", "certbot", "dig", "nginxShibboleth", "python313Packages.httpie", "nginx"]
+packages = ["haskellPackages.servant-multipart-client", "rubyPackages.listen", "certbot", "dig", "nginxShibboleth", "python313Packages.httpie", "nginx", "lsof"]
 
 [workflows]
 runButton = "Project"
@@ -59,30 +59,14 @@ externalPort = 4200
 
 [[ports]]
 localPort = 443
-externalPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
-externalPort = 3000
-
-[[ports]]
-localPort = 5002
-
-[[ports]]
-localPort = 5003
-externalPort = 3003
-
-[[ports]]
 localPort = 8080
-externalPort = 3002
-
-[[ports]]
-localPort = 8545
-externalPort = 3001
+externalPort = 8080
 
 [deployment]
 deploymentTarget = "static"
