@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { MeeBotDefaultIcon } from './components/Icons';
-import MeeBotStation from './src/components/MeeBotStation';
+import MeeBotStation from './components/MeeBotStation';
 import { useWallet, SUPPORTED_NETWORKS } from './hooks/useWallet';
-import MeeBotWidget from './src/components/dashboard/MeeBotWidget';
-import NFTGallery from './src/components/dashboard/NFTGallery';
-import BadgeGallery from './src/components/dashboard/BadgeGallery';
-import ProposalGrid from './src/components/dashboard/ProposalGrid';
-import MyJourney from './src/components/dashboard/MyJourney';
+import MeeBotWidget from './components/dashboard/MeeBotWidget';
+import NFTGallery from './components/dashboard/NFTGallery';
+import BadgeGallery from './components/dashboard/BadgeGallery';
+import ProposalGrid from './components/dashboard/ProposalGrid';
+import MyJourney from './components/dashboard/MyJourney';
 import ImageEditor from './components/ImageEditor';
 // FIX: Switched to journeyService (localStorage) to resolve Firestore permission errors.
 import { addTimelineEvent } from './src/lib/services/journeyService';
