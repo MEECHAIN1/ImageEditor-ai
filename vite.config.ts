@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
       host: true,
       port: 5000,
       strictPort: false,
-      allowedHosts: ['.replit.dev', '.replit.app'],
+      allowedHosts: true,
       watch: {
         ignored: ['**/node_modules/**','**/.pnpm/**','**/.local/**','**/dist/**'],
         usePolling: true,
