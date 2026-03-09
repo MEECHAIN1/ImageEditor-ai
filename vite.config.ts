@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -10,6 +11,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
+  const httpsOptions = {
+    key: fs.readFileSync('certbot/live/rpc.meechain.run.place/privkey.pem'),
+    cert: fs.readFileSync('certbot/live/rpc.meechain.run.place/fullchain.pem'),
+  };
+
   return {
     plugins: [
       react(),
@@ -20,6 +26,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     server: {
+      https: httpsOptions,
       host: true,
       port: 5000,
       strictPort: false,
