@@ -6,5 +6,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(8080, () => {
-  console.log("Mock RPC server running on http://localhost:8080");
+  console.log("Mock RPC server running on https://rpc.meechain.run.place:8080");
 });

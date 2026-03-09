@@ -18,7 +18,7 @@ module.exports = {
       chainId: 13390,
     },
     localhost: {
-      url: "http://0.0.0.0:8080",
+      url: "http://0.0.0.0:5000",
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     ritual: {
