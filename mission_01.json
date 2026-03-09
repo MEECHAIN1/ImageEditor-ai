@@ -2,7 +2,7 @@
   "name": "MeeChain Genesis Card #01",
   "description": "การ์ดเกียรติยศสำหรับผู้ร่วมบุกเบิก MeeChain ในภารกิจ Onboarding สำเร็จเป็นกลุ่มแรก",
   "image": "ipfs://[CID_OF_YOUR_IMAGE]",
-  "external_url": "[https://meechain.io/dashboard](https://meechain.io/dashboard)",
+  "external_url": "[https://rpc.meechain.run.place/dashboard](https://rpc.meechain.run.place/dashboard)",
   "background_color": "00f0dc",
   "attributes": [
     {

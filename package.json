@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+"scripts": {
+  "rpc-server": "vite node rpc-server.cjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
